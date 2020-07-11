@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="task_item_id" type="id"/>
+    <item name="note_item_id" type="id"/>
+    <item name="style_button_bold" type="id"/>
+    <item name="style_button_italic" type="id"/>
+    <item name="style_button_strike" type="id"/>
+    <item name="style_button_quote" type="id"/>
+    <item name="style_button_unordered_list" type="id"/>
+    <item name="style_button_ordered_list" type="id"/>
+</resources>
