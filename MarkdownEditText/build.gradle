@@ -1,7 +1,39 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
 
+ext {
+
+    bintrayRepo = "MarkdownEditText"
+    bintrayName = "com.yahiaangelo.markdownedittext"
+
+    publishedGroupId = 'com.yahiaangelo.markdownedittext'
+    libraryName = 'markdownedittext'
+    artifact = 'markdownedittext'
+
+    libraryDescription = 'A native Rich Text Editor with Markdown export option.'
+
+    siteUrl = 'https://github.com/YahiaAngelo/MarkdownEditText'
+    gitUrl = 'https://github.com/YahiaAngelo/MarkdownEditText.git'
+
+    libraryVersion = '1.0.0'
+
+    developerId = 'yahiaangelo'
+    developerName = 'Yahia Mostafa'
+    developerEmail = 'yahia.mostafa.elsayed@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+bintray {
+    pkg {
+        userOrg = 'yahiaangelo'
+    }
+}
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -11,7 +43,6 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -43,5 +74,15 @@ dependencies {
     implementation "io.noties.markwon:ext-strikethrough:4.3.1"
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+}
+
+repositories {
+    mavenCentral()
+}
+
+if (project.rootProject.file('local.properties').exists()) {
+    apply from: 'https://raw.githubusercontent.com/wajahatkarim3/JCenter-Gradle-Scripts/master/install.gradle'
+    apply from: 'https://raw.githubusercontent.com/wajahatkarim3/JCenter-Gradle-Scripts/master/bintray.gradle'
 
 }
