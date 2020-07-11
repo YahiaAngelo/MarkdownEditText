@@ -1,0 +1,1 @@
+# MarkdownEditText [ ![Download](https://api.bintray.com/packages/yahiaangelo/MarkdownEditText/com.yahiaangelo.markdownedittext/images/download.svg) ](https://bintray.com/yahiaangelo/MarkdownEditText/com.yahiaangelo.markdownedittext/_latestVersion)
