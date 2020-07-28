@@ -3,7 +3,7 @@
 A native Rich text editor for android based on [Markwon](https://github.com/noties/Markwon) library with export to Markdown option
 
 ---
-## Preivew
+## Preview
 <img src="https://raw.githubusercontent.com/YahiaAngelo/MarkdownEditText/master/preview/preview.gif" width="310">
 
 ---
@@ -53,6 +53,7 @@ implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.0.0'
 ### Libraries:
 
 [Markwon](https://github.com/noties/Markwon)
+
 [Material Design components](https://github.com/material-components/material-components-android)
 ---
 ## License: 
