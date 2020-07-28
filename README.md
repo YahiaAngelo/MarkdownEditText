@@ -36,9 +36,9 @@ implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.0.0'
 ```
 ### Code
 ```kotlin
-        val markdownEditText = findViewById<MarkdownEditText>(R.id.edittext)
-        val stylesBar = findViewById<MarkdownStylesBar>(R.id.stylesbar)
-        markdownEditText.setStylesBar(stylesBar)
+   val markdownEditText = findViewById<MarkdownEditText>(R.id.edittext)
+   val stylesBar = findViewById<MarkdownStylesBar>(R.id.stylesbar)
+   markdownEditText.setStylesBar(stylesBar)
 ```
 ---
 
@@ -51,10 +51,10 @@ implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.0.0'
 ---
 
 ### Libraries:
+[Material Design components](https://github.com/material-components/material-components-android)
 
 [Markwon](https://github.com/noties/Markwon)
 
-[Material Design components](https://github.com/material-components/material-components-android)
 ---
 ## License: 
 ```
