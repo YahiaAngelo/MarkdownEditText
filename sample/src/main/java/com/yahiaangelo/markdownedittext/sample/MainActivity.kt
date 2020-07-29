@@ -3,7 +3,10 @@ package com.yahiaangelo.markdownedittext.sample
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import com.yahiaangelo.markdownedittext.MarkdownEditText
+import com.yahiaangelo.markdownedittext.MarkdownStylesBar
 import com.yahiaangelo.markdownedittext.sample.databinding.ActivityMainBinding
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

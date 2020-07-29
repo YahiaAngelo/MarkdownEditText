@@ -451,7 +451,7 @@ class MarkdownEditText : AppCompatEditText {
                     when (span) {
                         is StrongEmphasisSpan -> {
                             val boldButton =
-                                markdownStylesBar!!.horizontalListView.getViewWithId(R.id.style_button_bold) as MaterialButton
+                                markdownStylesBar!!.getViewWithId(R.id.style_button_bold) as MaterialButton
                             if (!boldButton.isChecked) {
                                 boldButton.isChecked = true
                             }
@@ -459,7 +459,7 @@ class MarkdownEditText : AppCompatEditText {
                         }
                         is EmphasisSpan -> {
                             val italicButton =
-                                markdownStylesBar!!.horizontalListView.getViewWithId(R.id.style_button_italic) as MaterialButton
+                                markdownStylesBar!!.getViewWithId(R.id.style_button_italic) as MaterialButton
                             if (!italicButton.isChecked) {
                                 italicButton.isChecked = true
                             }
@@ -467,7 +467,7 @@ class MarkdownEditText : AppCompatEditText {
                         }
                         is StrikethroughSpan -> {
                             val strikeThroughButton =
-                                markdownStylesBar!!.horizontalListView.getViewWithId(R.id.style_button_strike) as MaterialButton
+                                markdownStylesBar!!.getViewWithId(R.id.style_button_strike) as MaterialButton
                             if (!strikeThroughButton.isChecked) {
                                 strikeThroughButton.isChecked = true
                             }
@@ -475,7 +475,7 @@ class MarkdownEditText : AppCompatEditText {
                         }
                         is QuoteSpan -> {
                             val quoteButton =
-                                markdownStylesBar!!.horizontalListView.getViewWithId(R.id.style_button_quote) as MaterialButton
+                                markdownStylesBar!!.getViewWithId(R.id.style_button_quote) as MaterialButton
                             if (!quoteButton.isChecked) {
                                 quoteButton.isChecked = true
                             }
@@ -483,7 +483,7 @@ class MarkdownEditText : AppCompatEditText {
                         }
                         is BulletListItemSpan -> {
                             val bulletListButton =
-                                markdownStylesBar!!.horizontalListView.getViewWithId(R.id.style_button_unordered_list) as MaterialButton
+                                markdownStylesBar!!.getViewWithId(R.id.style_button_unordered_list) as MaterialButton
                             if (!bulletListButton.isChecked) {
                                 bulletListButton.isChecked = true
                             }
@@ -492,7 +492,7 @@ class MarkdownEditText : AppCompatEditText {
 
                         is OrderedListItemSpan -> {
                             val numberedListButton =
-                                markdownStylesBar!!.horizontalListView.getViewWithId(R.id.style_button_ordered_list) as MaterialButton
+                                markdownStylesBar!!.getViewWithId(R.id.style_button_ordered_list) as MaterialButton
                             if (!numberedListButton.isChecked) {
                                 numberedListButton.isChecked = true
                             }
@@ -505,7 +505,7 @@ class MarkdownEditText : AppCompatEditText {
             } else {
                 if (selectedButtonId != null) {
                     val button =
-                        markdownStylesBar!!.horizontalListView.getViewWithId(
+                        markdownStylesBar!!.getViewWithId(
                             selectedButtonId!!
                         ) as MaterialButton
                     if (button.isChecked) {

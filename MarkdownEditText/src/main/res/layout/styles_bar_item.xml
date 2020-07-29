@@ -8,6 +8,7 @@
     android:id="@+id/style_button"
     android:checkable="true"
     app:iconGravity="textStart"
+    android:layout_marginEnd="12dp"
     app:backgroundTint="@color/style_button_color"
     app:iconPadding="0dp"
     tools:icon="@drawable/ic_format_italic"
