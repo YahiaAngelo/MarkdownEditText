@@ -20,6 +20,7 @@ class MarkdownEditText : AppCompatEditText {
     private var markwon: Markwon
     private var textWatcher: TextWatcher? = null
     private var markdownStylesBar: MarkdownStylesBar? = null
+    private var isSelectionStyling = false
 
     private val textWatchers: MutableList<TextWatcher> = emptyList<TextWatcher>().toMutableList()
 
@@ -68,30 +69,36 @@ class MarkdownEditText : AppCompatEditText {
             clearTextWatchers()
         } else {
 
-            textWatcher = object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {}
+            if (isSelectionStyling){
+                styliseText(textStyle, selectionStart, selectionEnd)
+                isSelectionStyling = false
+            }else{
+                textWatcher = object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {}
 
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {}
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {}
 
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int
-                ) {
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
 
-                    if (before < count) {
-                        styliseText(textStyle, start)
+                        if (before < count) {
+                            styliseText(textStyle, start)
+                        }
                     }
-                }
 
+                }
+                addTextWatcher(textWatcher!!)
             }
-            addTextWatcher(textWatcher!!)
+
         }
 
 
@@ -226,6 +233,44 @@ class MarkdownEditText : AppCompatEditText {
                 }
             }
 
+            else -> {
+            }
+        }
+
+
+    }
+
+    private fun styliseText(
+        textStyle: TextStyle,
+        start: Int,
+        end: Int
+    ) {
+        when (textStyle) {
+            TextStyle.BOLD -> {
+                text!!.setSpan(
+                    StrongEmphasisSpan(),
+                    start,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            TextStyle.ITALIC -> {
+                text!!.setSpan(
+                    EmphasisSpan(),
+                    start,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+            TextStyle.STRIKE -> {
+                text!!.setSpan(
+                    StrikethroughSpan(),
+                    start,
+                    end,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+            }
             else -> {
             }
         }
@@ -513,6 +558,8 @@ class MarkdownEditText : AppCompatEditText {
                     }
                 }
             }
+        }else if(selStart != selEnd && markdownStylesBar != null){
+            isSelectionStyling = true
         }
 
 
