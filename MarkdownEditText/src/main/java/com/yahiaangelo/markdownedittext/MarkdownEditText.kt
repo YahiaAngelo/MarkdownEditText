@@ -105,31 +105,62 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     fun triggerUnOrderedListStyle(stop: Boolean) {
-        if (!stop) {
-            if (selectionStart == selectionEnd) {
-
-                val currentLineStart = getLineCharPosition(getCurrentCursorLine())
-                val lineStartSpans =
-                    text!!.getSpans<BulletListItemSpan>(currentLineStart, currentLineStart + 2)
-                if (lineStartSpans.isEmpty()) {
-                    if (text!!.lines()[getCurrentCursorLine()].length > 3) {
-                        text!!.insert(
-                            currentLineStart + text!!.lines()[getCurrentCursorLine()].length,
-                            "\n"
-                        )
+        if (stop) {
+           clearTextWatchers()
+        }else{
+            if (text!!.isNotEmpty()) {
+                if ( text!!.length > 1 && text!!.getSpans(text!!.length - 2, text!!.length, OrderedListItemSpan::class.java).isEmpty()){
+                    if (text.toString().substring(text!!.length - 2, text!!.length) != "\n") {
+                        text!!.append("\n ")
+                    } else {
+                        text!!.append(" ")
                     }
-                    text!!.insert(selectionStart, " ")
-                    text!!.setSpan(
-                        BulletListItemSpan(markwon.configuration().theme(), 0),
-                        selectionStart - 1,
-                        selectionStart,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
+                }else{
+                    text!!.append("\n ")
                 }
+
+            } else {
+                text!!.append(" ")
             }
+
+            text!!.setSpan(
+                BulletListItemSpan(markwon.configuration().theme(), 0),
+                text!!.length - 1,
+                text!!.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            addTextWatcher(object : TextWatcher{
+                override fun afterTextChanged(s: Editable?) {}
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {}
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+                    if (before < count){
+                        val string = text.toString()
+                        if (string.isNotEmpty() && string[string.length - 1] == '\n') {
+                            text!!.append(" ")
+                            text!!.setSpan(
+                                BulletListItemSpan(markwon.configuration().theme(), 0),
+                                text!!.length - 1,
+                                text!!.length,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                        }
+                    }
+
+                }
+
+            })
+
         }
 
-        triggerStyle(TextStyle.UNORDERED_LIST, stop)
 
     }
 
@@ -139,11 +170,16 @@ class MarkdownEditText : AppCompatEditText {
         } else {
             var currentNum = 1
             if (text!!.isNotEmpty()) {
-                if (text.toString().substring(text!!.length - 2, text!!.length) != "\n") {
+                if ( text!!.length > 1 && text!!.getSpans(text!!.length - 2, text!!.length, BulletListItemSpan::class.java).isEmpty()){
+                    if (text.toString().substring(text!!.length - 2, text!!.length) != "\n") {
+                        text!!.append("\n  ")
+                    } else {
+                        text!!.append("  ")
+                    }
+                }else{
                     text!!.append("\n  ")
-                } else {
-                    text!!.append("  ")
                 }
+
             } else {
                 text!!.append("  ")
             }
@@ -157,31 +193,28 @@ class MarkdownEditText : AppCompatEditText {
             currentNum++
 
             addTextWatcher(object : TextWatcher{
-                override fun afterTextChanged(s: Editable?) {
-
-                }
+                override fun afterTextChanged(s: Editable?) {}
 
                 override fun beforeTextChanged(
                     s: CharSequence?,
                     start: Int,
                     count: Int,
                     after: Int
-                ) {
-
-                }
+                ) {}
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-                    val string = text.toString()
-                    if (string.isNotEmpty() && string[string.length - 1] == '\n') {
-                        text!!.append("  ")
-                        text!!.setSpan(
-                            OrderedListItemSpan(markwon.configuration().theme(), "${currentNum}-"),
-                            text!!.length - 2,
-                            text!!.length,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                        currentNum++
+                    if (before < count){
+                        val string = text.toString()
+                        if (string.isNotEmpty() && string[string.length - 1] == '\n') {
+                            text!!.append("  ")
+                            text!!.setSpan(
+                                OrderedListItemSpan(markwon.configuration().theme(), "${currentNum}-"),
+                                text!!.length - 2,
+                                text!!.length,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                            currentNum++
+                        }
                     }
                 }
 
@@ -220,19 +253,6 @@ class MarkdownEditText : AppCompatEditText {
                 )
 
             }
-            TextStyle.UNORDERED_LIST -> {
-                val string = text.toString()
-                if (string.isNotEmpty() && string[string.length - 1] == '\n') {
-                    text!!.append(" ")
-                    text!!.setSpan(
-                        BulletListItemSpan(markwon.configuration().theme(), 0),
-                        text!!.length - 1,
-                        text!!.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
-            }
-
             else -> {
             }
         }

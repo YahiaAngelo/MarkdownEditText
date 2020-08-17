@@ -37,8 +37,8 @@ class StylesBarAdapter(private val buttonsList: ArrayList<StyleButton>) : Recycl
         holder.styleButton.addOnCheckedChangeListener { button, _ ->
             if (selectedButton != null) {
                 if (selectedButton != button) {
-                    styleButtonClick(selectedButton!!)
                     selectedButton!!.isChecked = false
+                    styleButtonClick(selectedButton!!)
                 }
                 styleButtonClick(button)
                 selectedButton = button
