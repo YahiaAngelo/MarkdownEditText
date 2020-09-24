@@ -31,6 +31,7 @@ class MarkdownStylesBar @JvmOverloads constructor(
         styleButtons.add(StyleButton(R.drawable.ic_format_strikethrough, R.id.style_button_strike))
         styleButtons.add(StyleButton(R.drawable.ic_format_list_bulleted, R.id.style_button_unordered_list))
         styleButtons.add(StyleButton(R.drawable.ic_format_list_numbered, R.id.style_button_ordered_list))
+        styleButtons.add(StyleButton(R.drawable.ic_check_box, R.id.style_button_task_list))
         stylesBarAdapter = StylesBarAdapter(styleButtons)
         recyclerView.adapter = stylesBarAdapter
 

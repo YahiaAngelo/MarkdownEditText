@@ -69,6 +69,7 @@ class StylesBarAdapter(private val buttonsList: ArrayList<StyleButton>) : Recycl
                     !button.isChecked
                 )
                 R.id.style_button_ordered_list -> markdownEditText!!.triggerOrderedListStyle(!button.isChecked)
+                R.id.style_button_task_list -> markdownEditText!!.triggerTasksListStyle(!button.isChecked)
             }
 
         }
