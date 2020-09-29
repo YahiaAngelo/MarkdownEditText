@@ -13,7 +13,7 @@ A native Rich text editor for android based on [Markwon](https://github.com/noti
 ### Adding the depencency
 Add the dependency to your app build.gradle file:
 ```
-implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.0.2'
+implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.1.0'
 ```
 ### XML
 ```xml
@@ -48,6 +48,7 @@ implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.0.2'
 * strike through
 * bullet list
 * numbered list
+* tasks list
 ---
 
 ### Libraries:

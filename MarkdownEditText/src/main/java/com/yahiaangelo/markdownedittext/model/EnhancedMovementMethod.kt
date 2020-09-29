@@ -45,7 +45,7 @@ class EnhancedMovementMethod : ArrowKeyMovementMethod() {
                 off, off,
                 ClickableSpan::class.java
             )
-            if (link.size != 0) {
+            if (link.isNotEmpty()) {
                 if (action == MotionEvent.ACTION_UP) {
                     link[0].onClick(widget)
                 } else if (action == MotionEvent.ACTION_DOWN) {

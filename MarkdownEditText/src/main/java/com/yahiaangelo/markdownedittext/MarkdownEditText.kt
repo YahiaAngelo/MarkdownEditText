@@ -28,7 +28,8 @@ class MarkdownEditText : AppCompatEditText {
     private var markdownStylesBar: MarkdownStylesBar? = null
     private var isSelectionStyling = false
     var taskBoxColor: Int = ResourcesCompat.getColor(resources, R.color.primary, context.theme)
-    var taskBoxBackgroundColor: Int = ResourcesCompat.getColor(resources, R.color.icon, context.theme)
+    var taskBoxBackgroundColor: Int =
+        ResourcesCompat.getColor(resources, R.color.icon, context.theme)
 
     private val textWatchers: MutableList<TextWatcher> = emptyList<TextWatcher>().toMutableList()
 
@@ -67,33 +68,34 @@ class MarkdownEditText : AppCompatEditText {
                 }
 
                 override fun configureSpansFactory(builder: MarkwonSpansFactory.Builder) {
-                    val origin = builder.getFactory(TaskListItem::class.java) ?: return
+                    val origin = builder.getFactory(TaskListItem::class.java)
 
-                    builder.setFactory(TaskListItem::class.java,object : SpanFactory {
+                    builder.setFactory(
+                        TaskListItem::class.java
+                    ) { configuration, props ->
+                        val span = origin?.getSpans(configuration, props)
 
-                        override fun getSpans(
-                            configuration: MarkwonConfiguration,
-                            props: RenderProps
-                        ): Any? {
-                            val span = origin.getSpans(configuration, props)
-
-                            if (span !is TaskListSpan){
-                                return null
-                            }else{
-                                val taskClick = object : ClickableSpan(){
-                                    override fun onClick(widget: View) {
-                                        span.isDone = !span.isDone
-                                        text?.setSpan(span, text?.getSpanStart(span)!!, text?.getSpanEnd(span)!!, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                                    }
-
-                                    override fun updateDrawState(ds: TextPaint) {
-                                    }
+                        if (span !is TaskListSpan) {
+                            null
+                        } else {
+                            val taskClick = object : ClickableSpan() {
+                                override fun onClick(widget: View) {
+                                    span.isDone = !span.isDone
+                                    text?.setSpan(
+                                        span,
+                                        text?.getSpanStart(span)!!,
+                                        text?.getSpanEnd(span)!!,
+                                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                    )
                                 }
-                                return arrayOf(span, taskClick)
-                            }
-                        }
 
-                    })
+                                override fun updateDrawState(ds: TextPaint) {
+                                }
+                            }
+                            arrayOf(span, taskClick)
+                        }
+                    }
+
 
                 }
             })
@@ -110,10 +112,10 @@ class MarkdownEditText : AppCompatEditText {
             clearTextWatchers()
         } else {
 
-            if (isSelectionStyling){
+            if (isSelectionStyling) {
                 styliseText(textStyle, selectionStart, selectionEnd)
                 isSelectionStyling = false
-            }else{
+            } else {
                 textWatcher = object : TextWatcher {
                     override fun afterTextChanged(s: Editable?) {}
 
@@ -122,7 +124,8 @@ class MarkdownEditText : AppCompatEditText {
                         start: Int,
                         count: Int,
                         after: Int
-                    ) {}
+                    ) {
+                    }
 
                     override fun onTextChanged(
                         s: CharSequence?,
@@ -147,19 +150,22 @@ class MarkdownEditText : AppCompatEditText {
 
     fun triggerUnOrderedListStyle(stop: Boolean) {
         if (stop) {
-           clearTextWatchers()
-        }else{
+            clearTextWatchers()
+        } else {
             if (text!!.isNotEmpty()) {
-                if ( text!!.length > 1 &&text!!.getGivenSpansAt(span = arrayOf(
-                        TextStyle.ORDERED_LIST,
-                        TextStyle.TASKS_LIST,
-                    ),text!!.length - 2, text!!.length).isEmpty()){
+                if (text!!.length > 1 && text!!.getGivenSpansAt(
+                        span = arrayOf(
+                            TextStyle.ORDERED_LIST,
+                            TextStyle.TASKS_LIST,
+                        ), text!!.length - 2, text!!.length
+                    ).isEmpty()
+                ) {
                     if (text.toString().substring(text!!.length - 2, text!!.length) != "\n") {
                         text!!.append("\n ")
                     } else {
                         text!!.append(" ")
                     }
-                }else{
+                } else {
                     text!!.append("\n ")
                 }
 
@@ -174,7 +180,7 @@ class MarkdownEditText : AppCompatEditText {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
 
-            addTextWatcher(object : TextWatcher{
+            addTextWatcher(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {}
 
                 override fun beforeTextChanged(
@@ -182,11 +188,12 @@ class MarkdownEditText : AppCompatEditText {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
-                    if (before < count){
+                    if (before < count) {
                         val string = text.toString()
                         if (string.isNotEmpty() && string[string.length - 1] == '\n') {
                             text!!.append(" ")
@@ -214,16 +221,19 @@ class MarkdownEditText : AppCompatEditText {
         } else {
             var currentNum = 1
             if (text!!.isNotEmpty()) {
-                if ( text!!.length > 1 && text!!.getGivenSpansAt(span = arrayOf(
-                        TextStyle.TASKS_LIST,
-                        TextStyle.UNORDERED_LIST,
-                    ),text!!.length - 2, text!!.length).isEmpty()){
+                if (text!!.length > 1 && text!!.getGivenSpansAt(
+                        span = arrayOf(
+                            TextStyle.TASKS_LIST,
+                            TextStyle.UNORDERED_LIST,
+                        ), text!!.length - 2, text!!.length
+                    ).isEmpty()
+                ) {
                     if (text.toString().substring(text!!.length - 2, text!!.length) != "\n") {
                         text!!.append("\n  ")
                     } else {
                         text!!.append("  ")
                     }
-                }else{
+                } else {
                     text!!.append("\n  ")
                 }
 
@@ -239,7 +249,7 @@ class MarkdownEditText : AppCompatEditText {
             )
             currentNum++
 
-            addTextWatcher(object : TextWatcher{
+            addTextWatcher(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {}
 
                 override fun beforeTextChanged(
@@ -247,15 +257,19 @@ class MarkdownEditText : AppCompatEditText {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (before < count){
+                    if (before < count) {
                         val string = text.toString()
                         if (string.isNotEmpty() && string[string.length - 1] == '\n') {
                             text!!.append("  ")
                             text!!.setSpan(
-                                OrderedListItemSpan(markwon.configuration().theme(), "${currentNum}-"),
+                                OrderedListItemSpan(
+                                    markwon.configuration().theme(),
+                                    "${currentNum}-"
+                                ),
                                 text!!.length - 2,
                                 text!!.length,
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -269,22 +283,25 @@ class MarkdownEditText : AppCompatEditText {
         }
     }
 
-    fun triggerTasksListStyle(stop: Boolean){
+    fun triggerTasksListStyle(stop: Boolean) {
 
         if (stop) {
             clearTextWatchers()
-        }else{
+        } else {
             if (text!!.isNotEmpty()) {
-                if ( text!!.length > 1 && text!!.getGivenSpansAt(span = arrayOf(
-                        TextStyle.ORDERED_LIST,
-                        TextStyle.UNORDERED_LIST,
-                    ),text!!.length - 2, text!!.length).isEmpty()){
+                if (text!!.length > 1 && text!!.getGivenSpansAt(
+                        span = arrayOf(
+                            TextStyle.ORDERED_LIST,
+                            TextStyle.UNORDERED_LIST,
+                        ), text!!.length - 2, text!!.length
+                    ).isEmpty()
+                ) {
                     if (text.toString().substring(text!!.length - 2, text!!.length) != "\n") {
                         text!!.append("\n ")
                     } else {
                         text!!.append(" ")
                     }
-                }else{
+                } else {
                     text!!.append("\n ")
                 }
 
@@ -292,10 +309,12 @@ class MarkdownEditText : AppCompatEditText {
                 text!!.append(" ")
             }
 
-            setTaskSpan(text!!.length - 1,
-                text!!.length, false)
+            setTaskSpan(
+                text!!.length - 1,
+                text!!.length, false
+            )
 
-            addTextWatcher(object : TextWatcher{
+            addTextWatcher(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {}
 
                 override fun beforeTextChanged(
@@ -303,16 +322,19 @@ class MarkdownEditText : AppCompatEditText {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
-                    if (before < count){
+                    if (before < count) {
                         val string = text.toString()
                         if (string.isNotEmpty() && string[string.length - 1] == '\n') {
                             text!!.append(" ")
-                            setTaskSpan(text!!.length - 1,
-                                text!!.length, false)
+                            setTaskSpan(
+                                text!!.length - 1,
+                                text!!.length, false
+                            )
                         }
                     }
 
@@ -323,20 +345,24 @@ class MarkdownEditText : AppCompatEditText {
         }
     }
 
-    private fun setTaskSpan(start: Int, end: Int, isDone: Boolean){
-        val taskSpan = TaskListSpan(markwon.configuration().theme(), TaskListDrawable(taskBoxColor, taskBoxColor, taskBoxBackgroundColor), isDone)
+    private fun setTaskSpan(start: Int, end: Int, isDone: Boolean) {
+        val taskSpan = TaskListSpan(
+            markwon.configuration().theme(),
+            TaskListDrawable(taskBoxColor, taskBoxColor, taskBoxBackgroundColor),
+            isDone
+        )
         text!!.setSpan(
-           taskSpan ,
+            taskSpan,
             start,
             end,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
-        text?.setSpan(object : ClickableSpan(){
+        text?.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 taskSpan.isDone = !taskSpan.isDone
                 text!!.setSpan(
-                    taskSpan ,
+                    taskSpan,
                     start,
                     end,
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -346,7 +372,7 @@ class MarkdownEditText : AppCompatEditText {
             override fun updateDrawState(ds: TextPaint) {
 
             }
-        }, start, end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
 
@@ -440,15 +466,17 @@ class MarkdownEditText : AppCompatEditText {
         val startList = emptyList<Int>().toMutableList()
         val endList = emptyList<Int>().toMutableList()
         var i = 0
+        val appliedListSpans = mutableListOf<Int>()
 
+        filterSpans()
         for ((index, span) in text!!.getGivenSpans(
             span = arrayOf(
-                TextStyle.BOLD,
-                TextStyle.ITALIC,
-                TextStyle.STRIKE,
                 TextStyle.UNORDERED_LIST,
                 TextStyle.ORDERED_LIST,
-                TextStyle.TASKS_LIST
+                TextStyle.TASKS_LIST,
+                TextStyle.BOLD,
+                TextStyle.ITALIC,
+                TextStyle.STRIKE
             )
         ).withIndex()) {
             val start = text!!.getSpanStart(span)
@@ -460,10 +488,24 @@ class MarkdownEditText : AppCompatEditText {
         for ((index, start) in startList.sorted().withIndex()) {
             val end = endList.sorted()[index]
             val spannedText = end.let { text!!.substring(start, it) }
-            val span = end.let { text!!.getSpans(start, it, Any::class.java) }
-            if (span != null) {
-                for (selectedSpan in span.distinctBy { it.javaClass }) {
-                    if (selectedSpan is BulletListItemSpan){
+            val span = end.let {
+                text!!.getGivenSpansAt(
+                    span = arrayOf(
+                        TextStyle.UNORDERED_LIST,
+                        TextStyle.ORDERED_LIST,
+                        TextStyle.TASKS_LIST,
+                        TextStyle.BOLD,
+                        TextStyle.ITALIC,
+                        TextStyle.STRIKE
+                    ), start, it
+                )
+            }
+
+            for (selectedSpan in span) {
+
+
+                if (selectedSpan is BulletListItemSpan) {
+                    if (!appliedListSpans.contains(start)) {
                         val mdString = "* $spannedText"
                         mdText = SpannableStringBuilder(
                             mdText!!.replaceRange(
@@ -473,75 +515,145 @@ class MarkdownEditText : AppCompatEditText {
                             )
                         )
                         i += 2
-                    }else if(selectedSpan is TaskListSpan){
-                            val mdString = if(selectedSpan.isDone) "* [x] $spannedText" else "* [ ] $spannedText"
-                            mdText = SpannableStringBuilder(
-                                mdText!!.replaceRange(
-                                    start + i,
-                                    end + i,
-                                    mdString
-                                )
-                            )
-                            i += 6
+                        appliedListSpans.add(start)
                     }
-                    else{
-                        if (spannedText.length > 1) {
-                            when (selectedSpan) {
-                                is StrongEmphasisSpan -> {
-                                    val mdString = "**$spannedText**"
-                                    mdText = SpannableStringBuilder(
-                                        mdText!!.replaceRange(
-                                            start + i,
-                                            end + i,
-                                            mdString
-                                        )
-                                    )
-                                    i += 4
-                                }
-                                is EmphasisSpan -> {
-                                    val mdString = "_${spannedText}_"
-                                    mdText = SpannableStringBuilder(
-                                        mdText!!.replaceRange(
-                                            start + i,
-                                            end + i,
-                                            mdString
-                                        )
-                                    )
-                                    i += 2
-                                }
-                                is StrikethroughSpan -> {
-                                    val mdString = "~~$spannedText~~"
-                                    mdText = SpannableStringBuilder(
-                                        mdText!!.replaceRange(
-                                            start + i,
-                                            end + i,
-                                            mdString
-                                        )
-                                    )
-                                    i += 4
-                                }
-                                is OrderedListItemSpan -> {
-                                    val mdString = "${selectedSpan.number} "
-                                    mdText = SpannableStringBuilder(
-                                        mdText!!.replaceRange(
-                                            start + i,
-                                            start + i + 2,
-                                            mdString
-                                        )
-                                    )
-                                    i += 1
-                                }
 
+                } else if (selectedSpan is TaskListSpan) {
+                    if (!appliedListSpans.contains(start)) {
+
+                        val mdString =
+                            if (selectedSpan.isDone) "* [x] $spannedText" else "* [ ] $spannedText"
+                        mdText = SpannableStringBuilder(
+                            mdText!!.replaceRange(
+                                start + i,
+                                end + i,
+                                mdString
+                            )
+                        )
+                        i += 6
+                        appliedListSpans.add(start)
+                    }
+                } else {
+                    if (spannedText.length > 1) {
+                        when (selectedSpan) {
+                            is StrongEmphasisSpan -> {
+                                val mdString = "**$spannedText**"
+                                mdText = SpannableStringBuilder(
+                                    mdText!!.replaceRange(
+                                        start + i,
+                                        end + i,
+                                        mdString
+                                    )
+                                )
+                                i += 4
                             }
-                        }
+                            is EmphasisSpan -> {
+                                val mdString = "_${spannedText}_"
+                                mdText = SpannableStringBuilder(
+                                    mdText!!.replaceRange(
+                                        start + i,
+                                        end + i,
+                                        mdString
+                                    )
+                                )
+                                i += 2
+                            }
+                            is StrikethroughSpan -> {
+                                val mdString = "~~$spannedText~~"
+                                mdText = SpannableStringBuilder(
+                                    mdText!!.replaceRange(
+                                        start + i,
+                                        end + i,
+                                        mdString
+                                    )
+                                )
+                                i += 4
+                            }
+                            is OrderedListItemSpan -> {
+                                val mdString = "${selectedSpan.number}$spannedText"
+                                mdText = SpannableStringBuilder(
+                                    mdText!!.replaceRange(
+                                        start + i,
+                                        end + i,
+                                        mdString
+                                    )
+                                )
+                                i += 2
+                            }
 
+                        }
                     }
 
                 }
+
             }
 
         }
         return mdText.toString()
+    }
+
+    private fun filterSpans() {
+        val spans = text?.getGivenSpans(
+            span = arrayOf(
+                TextStyle.BOLD,
+                TextStyle.ITALIC,
+                TextStyle.STRIKE
+            )
+        )
+
+        if (spans != null) {
+            for (span in spans) {
+                val selectedSpans = text?.getGivenSpansAt(
+                    span = arrayOf(span),
+                    text?.getSpanStart(span)!!,
+                    text?.getSpanEnd(span)!!
+                )
+                if (selectedSpans!!.size > 1) {
+                    var smallSpanIndex = 0
+                    var spanSize: Int? = null
+                    for ((index, selectedSpan) in selectedSpans.withIndex()) {
+                        if (text?.getSpanStart(selectedSpan) != null) {
+                            val spanStart = text?.getSpanStart(selectedSpan)
+                            val spanEnd = text?.getSpanEnd(selectedSpan)!!
+                            if (spanSize == null) {
+                                spanSize = spanEnd - spanStart!!
+                                smallSpanIndex = index
+                            } else {
+                                if (spanEnd - spanStart!! < spanSize) {
+                                    spanSize = spanEnd - spanStart
+                                    smallSpanIndex = index
+                                }
+                            }
+                        }
+                    }
+                    text?.removeSpan(selectedSpans[smallSpanIndex])
+                }
+            }
+        }
+
+        val listsSpans = text?.getGivenSpans(
+            span = arrayOf(
+                TextStyle.UNORDERED_LIST,
+                TextStyle.TASKS_LIST
+            )
+        )
+
+        if (!listsSpans.isNullOrEmpty()) {
+            for (span in listsSpans) {
+                val spanStart = text?.getSpanStart(span)
+                val spanEnd = text?.getSpanEnd(span)
+
+                if (spanEnd!! - spanStart!! > 1) {
+                    text?.removeSpan(span)
+                    text?.setSpan(
+                        span,
+                        spanStart,
+                        spanStart + 1,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
+        }
     }
 
 
@@ -584,6 +696,20 @@ class MarkdownEditText : AppCompatEditText {
                         spanList.add(it)
                     }
                 }
+            }
+        }
+        return spanList
+    }
+
+    private fun Editable.getGivenSpansAt(
+        vararg span: Any,
+        start: Int,
+        end: Int
+    ): MutableList<Any> {
+        val spanList = emptyArray<Any>().toMutableList()
+        for (selectedSpan in span) {
+            this.getSpans(start, end, selectedSpan::class.java).forEach {
+                spanList.add(it)
             }
         }
         return spanList
@@ -690,7 +816,7 @@ class MarkdownEditText : AppCompatEditText {
                     }
                 }
             }
-        }else if(selStart != selEnd && markdownStylesBar != null){
+        } else if (selStart != selEnd && markdownStylesBar != null) {
             isSelectionStyling = true
         }
 
