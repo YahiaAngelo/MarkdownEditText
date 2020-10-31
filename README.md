@@ -13,7 +13,7 @@ A native Rich text editor for android based on [Markwon](https://github.com/noti
 ### Adding the depencency
 Add the dependency to your app build.gradle file:
 ```
-implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.1.0'
+implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.1.1'
 ```
 ### XML
 ```xml
@@ -39,6 +39,11 @@ implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.1.0'
    val markdownEditText = findViewById<MarkdownEditText>(R.id.edittext)
    val stylesBar = findViewById<MarkdownStylesBar>(R.id.stylesbar)
    markdownEditText.setStylesBar(stylesBar)
+```
+#### Customize default Styles bar :
+```Kotlin
+   //Select specific Styles to show
+   stylesbar.stylesList = arrayOf(MarkdownEditText.TextStyle.BOLD, MarkdownEditText.TextStyle.ITALIC)
 ```
 ---
 

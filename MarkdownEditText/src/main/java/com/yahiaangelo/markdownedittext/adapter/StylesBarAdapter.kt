@@ -9,7 +9,7 @@ import com.yahiaangelo.markdownedittext.MarkdownEditText
 import com.yahiaangelo.markdownedittext.R
 import com.yahiaangelo.markdownedittext.model.StyleButton
 
-class StylesBarAdapter(private val buttonsList: ArrayList<StyleButton>) : RecyclerView.Adapter<StylesBarAdapter.MyViewHolder>() {
+class StylesBarAdapter(private var buttonsList: ArrayList<StyleButton>) : RecyclerView.Adapter<StylesBarAdapter.MyViewHolder>() {
 
     private var selectedButton: MaterialButton? = null
     var buttonsColor: ColorStateList? = null
@@ -25,6 +25,11 @@ class StylesBarAdapter(private val buttonsList: ArrayList<StyleButton>) : Recycl
 
     override fun getItemCount(): Int {
        return buttonsList.size
+    }
+
+    fun setStyles(newButtonsList: ArrayList<StyleButton>){
+        buttonsList = newButtonsList
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -65,11 +70,16 @@ class StylesBarAdapter(private val buttonsList: ArrayList<StyleButton>) : Recycl
                     MarkdownEditText.TextStyle.STRIKE,
                     !button.isChecked
                 )
-                R.id.style_button_unordered_list -> markdownEditText!!.triggerUnOrderedListStyle(
+                R.id.style_button_unordered_list -> markdownEditText!!.triggerStyle(
+                    MarkdownEditText.TextStyle.UNORDERED_LIST,
                     !button.isChecked
                 )
-                R.id.style_button_ordered_list -> markdownEditText!!.triggerOrderedListStyle(!button.isChecked)
-                R.id.style_button_task_list -> markdownEditText!!.triggerTasksListStyle(!button.isChecked)
+                R.id.style_button_ordered_list -> markdownEditText!!.triggerStyle(
+                    MarkdownEditText.TextStyle.ORDERED_LIST,
+                    !button.isChecked)
+                R.id.style_button_task_list -> markdownEditText!!.triggerStyle(
+                    MarkdownEditText.TextStyle.TASKS_LIST,
+                    !button.isChecked)
             }
 
         }

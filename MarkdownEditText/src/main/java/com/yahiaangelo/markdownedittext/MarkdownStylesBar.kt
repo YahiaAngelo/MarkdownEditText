@@ -16,6 +16,11 @@ class MarkdownStylesBar @JvmOverloads constructor(
     private var stylesBarAdapter: StylesBarAdapter
     private var styleButtons: ArrayList<StyleButton>
     private var recyclerView: RecyclerView = RecyclerView(context)
+    var stylesList: Array<MarkdownEditText.TextStyle> = MarkdownEditText.TextStyle.values()
+    set(value) {
+        field = value
+        updateStyles()
+    }
     var markdownEditText: MarkdownEditText? = null
         set(value) {
             stylesBarAdapter.markdownEditText = value
@@ -26,12 +31,7 @@ class MarkdownStylesBar @JvmOverloads constructor(
         val linearLayoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         recyclerView.layoutManager = linearLayoutManager
         styleButtons = ArrayList()
-        styleButtons.add(StyleButton(R.drawable.ic_format_bold, R.id.style_button_bold))
-        styleButtons.add(StyleButton(R.drawable.ic_format_italic, R.id.style_button_italic))
-        styleButtons.add(StyleButton(R.drawable.ic_format_strikethrough, R.id.style_button_strike))
-        styleButtons.add(StyleButton(R.drawable.ic_format_list_bulleted, R.id.style_button_unordered_list))
-        styleButtons.add(StyleButton(R.drawable.ic_format_list_numbered, R.id.style_button_ordered_list))
-        styleButtons.add(StyleButton(R.drawable.ic_check_box, R.id.style_button_task_list))
+        setStylesButtons()
         stylesBarAdapter = StylesBarAdapter(styleButtons)
         recyclerView.adapter = stylesBarAdapter
 
@@ -42,7 +42,27 @@ class MarkdownStylesBar @JvmOverloads constructor(
         }
         a.recycle()
         addView(recyclerView)
-        
+
+    }
+
+    private fun updateStyles(){
+        styleButtons.clear()
+        setStylesButtons()
+        stylesBarAdapter.setStyles(styleButtons)
+    }
+
+    private fun setStylesButtons(){
+        for (style in stylesList){
+            when(style){
+                MarkdownEditText.TextStyle.BOLD -> styleButtons.add(StyleButton(R.drawable.ic_format_bold, R.id.style_button_bold))
+                MarkdownEditText.TextStyle.ITALIC -> styleButtons.add(StyleButton(R.drawable.ic_format_italic, R.id.style_button_italic))
+                MarkdownEditText.TextStyle.STRIKE -> styleButtons.add(StyleButton(R.drawable.ic_format_strikethrough, R.id.style_button_strike))
+                MarkdownEditText.TextStyle.UNORDERED_LIST -> styleButtons.add(StyleButton(R.drawable.ic_format_list_bulleted, R.id.style_button_unordered_list))
+                MarkdownEditText.TextStyle.ORDERED_LIST -> styleButtons.add(StyleButton(R.drawable.ic_format_list_numbered, R.id.style_button_ordered_list))
+                MarkdownEditText.TextStyle.TASKS_LIST -> styleButtons.add(StyleButton(R.drawable.ic_check_box, R.id.style_button_task_list))
+                else ->{}
+            }
+        }
     }
 
     fun getViewWithId(id: Int): View{

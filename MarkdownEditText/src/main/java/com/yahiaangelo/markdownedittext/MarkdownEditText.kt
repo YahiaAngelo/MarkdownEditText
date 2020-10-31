@@ -111,37 +111,45 @@ class MarkdownEditText : AppCompatEditText {
         if (stop) {
             clearTextWatchers()
         } else {
+            when(textStyle){
+                TextStyle.UNORDERED_LIST -> triggerUnOrderedListStyle(stop)
+                TextStyle.ORDERED_LIST -> triggerOrderedListStyle(stop)
+                TextStyle.TASKS_LIST -> triggerTasksListStyle(stop)
+                else-> {
+                    if (isSelectionStyling) {
+                        styliseText(textStyle, selectionStart, selectionEnd)
+                        isSelectionStyling = false
+                    } else {
+                        textWatcher = object : TextWatcher {
+                            override fun afterTextChanged(s: Editable?) {}
 
-            if (isSelectionStyling) {
-                styliseText(textStyle, selectionStart, selectionEnd)
-                isSelectionStyling = false
-            } else {
-                textWatcher = object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {}
+                            override fun beforeTextChanged(
+                                s: CharSequence?,
+                                start: Int,
+                                count: Int,
+                                after: Int
+                            ) {
+                            }
 
-                    override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                    ) {
-                    }
+                            override fun onTextChanged(
+                                s: CharSequence?,
+                                start: Int,
+                                before: Int,
+                                count: Int
+                            ) {
 
-                    override fun onTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        before: Int,
-                        count: Int
-                    ) {
+                                if (before < count) {
+                                    styliseText(textStyle, start)
+                                }
+                            }
 
-                        if (before < count) {
-                            styliseText(textStyle, start)
                         }
+                        addTextWatcher(textWatcher!!)
                     }
-
                 }
-                addTextWatcher(textWatcher!!)
             }
+
+
 
         }
 
@@ -360,13 +368,18 @@ class MarkdownEditText : AppCompatEditText {
 
         text?.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
+                val spanStart = text?.getSpanStart(taskSpan)
+                val spanEnd = text?.getSpanEnd(taskSpan)
                 taskSpan.isDone = !taskSpan.isDone
-                text!!.setSpan(
-                    taskSpan,
-                    start,
-                    end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+                if (spanStart != null && spanEnd != null){
+                    text!!.setSpan(
+                        taskSpan,
+                        spanStart,
+                        spanEnd,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+
             }
 
             override fun updateDrawState(ds: TextPaint) {

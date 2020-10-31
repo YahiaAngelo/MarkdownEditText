@@ -4,9 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import com.yahiaangelo.markdownedittext.MarkdownEditText
-import com.yahiaangelo.markdownedittext.MarkdownStylesBar
 import com.yahiaangelo.markdownedittext.sample.databinding.ActivityMainBinding
-import kotlinx.android.synthetic.main.activity_main.view.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,5 +19,7 @@ class MainActivity : AppCompatActivity() {
             }
             return@setOnMenuItemClickListener true
         }
+        //Select specific Styles to show
+        //binding.stylesbar.stylesList = arrayOf(MarkdownEditText.TextStyle.BOLD, MarkdownEditText.TextStyle.ITALIC)
     }
 }
