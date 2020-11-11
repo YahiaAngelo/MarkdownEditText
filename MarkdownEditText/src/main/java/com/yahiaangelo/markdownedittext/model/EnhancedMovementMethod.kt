@@ -47,7 +47,9 @@ class EnhancedMovementMethod : ArrowKeyMovementMethod() {
             )
             if (link.isNotEmpty()) {
                 if (action == MotionEvent.ACTION_UP) {
-                    link[0].onClick(widget)
+                    if (x < layout.getLineMax(0)){
+                        link[0].onClick(widget)
+                    }
                 } else if (action == MotionEvent.ACTION_DOWN) {
                     Selection.setSelection(
                         buffer,
