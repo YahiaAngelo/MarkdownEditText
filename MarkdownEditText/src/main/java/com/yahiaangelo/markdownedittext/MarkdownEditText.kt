@@ -1,16 +1,21 @@
 package com.yahiaangelo.markdownedittext
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.*
 import android.text.style.ClickableSpan
 import android.text.style.QuoteSpan
 import android.text.style.StrikethroughSpan
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.getSpans
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.yahiaangelo.markdownedittext.model.EnhancedMovementMethod
 import io.noties.markwon.*
 import io.noties.markwon.core.spans.*
@@ -19,6 +24,7 @@ import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListItem
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 import io.noties.markwon.ext.tasklist.TaskListSpan
+import io.noties.markwon.movement.MovementMethodPlugin
 import org.commonmark.node.SoftLineBreak
 
 class MarkdownEditText : AppCompatEditText {
@@ -353,6 +359,34 @@ class MarkdownEditText : AppCompatEditText {
         }
     }
 
+    fun showInsertLinkDialog(){
+        val textInputView = LayoutInflater.from(context).inflate(R.layout.link_input_layout, null)
+        MaterialAlertDialogBuilder(context)
+            .setView(textInputView)
+            .setPositiveButton("Add"
+            ) { _, _ ->
+                val title = textInputView.findViewById<TextInputEditText>(R.id.link_input_title).text
+                val url = textInputView.findViewById<TextInputEditText>(R.id.link_input_url).text
+                if (!url.isNullOrEmpty()){
+                    addLinkSpan(title.toString(), url.toString())
+                }
+            }
+            .setNegativeButton("Cancel"){ _, _ -> }
+            .show()
+
+
+    }
+
+    private fun addLinkSpan(title: String?, link: String){
+        if (!title.isNullOrEmpty()){
+            if (selectionStart == selectionEnd){
+                val cursorStart = selectionStart
+                text!!.insert(cursorStart, title)
+                text!!.setSpan(LinkSpan(markwon.configuration().theme(), link, LinkResolverDef())
+                , cursorStart, cursorStart + title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+    }
     private fun setTaskSpan(start: Int, end: Int, isDone: Boolean) {
         val taskSpan = TaskListSpan(
             markwon.configuration().theme(),
@@ -469,6 +503,7 @@ class MarkdownEditText : AppCompatEditText {
         ITALIC,
         STRIKE,
         QUOTE,
+        LINK,
         UNORDERED_LIST,
         ORDERED_LIST,
         TASKS_LIST
@@ -483,14 +518,7 @@ class MarkdownEditText : AppCompatEditText {
 
         filterSpans()
         for ((index, span) in text!!.getGivenSpans(
-            span = arrayOf(
-                TextStyle.UNORDERED_LIST,
-                TextStyle.ORDERED_LIST,
-                TextStyle.TASKS_LIST,
-                TextStyle.BOLD,
-                TextStyle.ITALIC,
-                TextStyle.STRIKE
-            )
+            span = TextStyle.values()
         ).withIndex()) {
             val start = text!!.getSpanStart(span)
             val end = text!!.getSpanEnd(span)
@@ -503,14 +531,7 @@ class MarkdownEditText : AppCompatEditText {
             val spannedText = end.let { text!!.substring(start, it) }
             val span = end.let {
                 text!!.getGivenSpansAt(
-                    span = arrayOf(
-                        TextStyle.UNORDERED_LIST,
-                        TextStyle.ORDERED_LIST,
-                        TextStyle.TASKS_LIST,
-                        TextStyle.BOLD,
-                        TextStyle.ITALIC,
-                        TextStyle.STRIKE
-                    ), start, it
+                    span = TextStyle.values(), start, it
                 )
             }
 
@@ -593,6 +614,17 @@ class MarkdownEditText : AppCompatEditText {
                                 )
                                 i += 2
                             }
+                            is LinkSpan -> {
+                                val mdString = "[$spannedText](${selectedSpan.link})"
+                                mdText = SpannableStringBuilder(
+                                    mdText!!.replaceRange(
+                                        start + i,
+                                        end + i,
+                                        mdString
+                                    )
+                                )
+                                i += 4 + (selectedSpan.link.length - spannedText.length)
+                            }
 
                         }
                     }
@@ -610,7 +642,8 @@ class MarkdownEditText : AppCompatEditText {
             span = arrayOf(
                 TextStyle.BOLD,
                 TextStyle.ITALIC,
-                TextStyle.STRIKE
+                TextStyle.STRIKE,
+                TextStyle.LINK
             )
         )
 
@@ -709,6 +742,11 @@ class MarkdownEditText : AppCompatEditText {
                         spanList.add(it)
                     }
                 }
+                TextStyle.LINK -> {
+                    this.getSpans<LinkSpan>().forEach {
+                        spanList.add(it)
+                    }
+                }
             }
         }
         return spanList
@@ -768,6 +806,11 @@ class MarkdownEditText : AppCompatEditText {
                 }
                 TextStyle.TASKS_LIST -> {
                     this.getSpans<TaskListSpan>(start, end).forEach {
+                        spanList.add(it)
+                    }
+                }
+                TextStyle.LINK -> {
+                    this.getSpans<LinkSpan>(start, end).forEach {
                         spanList.add(it)
                     }
                 }

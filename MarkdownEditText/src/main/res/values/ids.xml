@@ -9,4 +9,5 @@
     <item name="style_button_unordered_list" type="id"/>
     <item name="style_button_ordered_list" type="id"/>
     <item name="style_button_task_list" type="id"/>
+    <item name="style_button_link" type="id"/>
 </resources>

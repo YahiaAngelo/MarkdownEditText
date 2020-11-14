@@ -51,6 +51,7 @@ implementation 'com.yahiaangelo.markdownedittext:markdownedittext:1.1.1'
 * bold
 * italic
 * strike through
+* links
 * bullet list
 * numbered list
 * tasks list

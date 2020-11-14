@@ -60,6 +60,7 @@ class MarkdownStylesBar @JvmOverloads constructor(
                 MarkdownEditText.TextStyle.UNORDERED_LIST -> styleButtons.add(StyleButton(R.drawable.ic_format_list_bulleted, R.id.style_button_unordered_list))
                 MarkdownEditText.TextStyle.ORDERED_LIST -> styleButtons.add(StyleButton(R.drawable.ic_format_list_numbered, R.id.style_button_ordered_list))
                 MarkdownEditText.TextStyle.TASKS_LIST -> styleButtons.add(StyleButton(R.drawable.ic_check_box, R.id.style_button_task_list))
+                MarkdownEditText.TextStyle.LINK -> styleButtons.add(StyleButton(R.drawable.ic_insert_link, R.id.style_button_link))
                 else ->{}
             }
         }

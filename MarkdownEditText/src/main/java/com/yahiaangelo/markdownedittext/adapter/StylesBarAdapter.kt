@@ -39,6 +39,12 @@ class StylesBarAdapter(private var buttonsList: ArrayList<StyleButton>) : Recycl
         }
         holder.styleButton.icon = holder.itemView.context.getDrawable(styleButtonModel.icon)
         holder.styleButton.id = styleButtonModel.id
+        if (styleButtonModel.id == R.id.style_button_link){
+            holder.styleButton.isCheckable = false
+            holder.styleButton.setOnClickListener {
+                styleButtonClick(holder.styleButton)
+            }
+        }
         holder.styleButton.addOnCheckedChangeListener { button, _ ->
             if (selectedButton != null) {
                 if (selectedButton != button) {
@@ -80,6 +86,7 @@ class StylesBarAdapter(private var buttonsList: ArrayList<StyleButton>) : Recycl
                 R.id.style_button_task_list -> markdownEditText!!.triggerStyle(
                     MarkdownEditText.TextStyle.TASKS_LIST,
                     !button.isChecked)
+                R.id.style_button_link -> markdownEditText!!.showInsertLinkDialog()
             }
 
         }
