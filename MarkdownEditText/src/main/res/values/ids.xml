@@ -10,4 +10,5 @@
     <item name="style_button_ordered_list" type="id"/>
     <item name="style_button_task_list" type="id"/>
     <item name="style_button_link" type="id"/>
+    <item name="editor_action_id" type="id"/>
 </resources>
