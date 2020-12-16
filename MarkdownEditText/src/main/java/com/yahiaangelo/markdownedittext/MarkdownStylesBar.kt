@@ -15,7 +15,7 @@ class MarkdownStylesBar @JvmOverloads constructor(
 
     private var stylesBarAdapter: StylesBarAdapter
     private var styleButtons: ArrayList<StyleButton>
-    private var recyclerView: RecyclerView = RecyclerView(context)
+    private var recyclerView: RecyclerView? = RecyclerView(context)
     var stylesList: Array<MarkdownEditText.TextStyle> = MarkdownEditText.TextStyle.values()
     set(value) {
         field = value
@@ -29,11 +29,11 @@ class MarkdownStylesBar @JvmOverloads constructor(
 
     init {
         val linearLayoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        recyclerView.layoutManager = linearLayoutManager
+        recyclerView?.layoutManager = linearLayoutManager
         styleButtons = ArrayList()
         setStylesButtons()
         stylesBarAdapter = StylesBarAdapter(styleButtons)
-        recyclerView.adapter = stylesBarAdapter
+        recyclerView?.adapter = stylesBarAdapter
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.MarkdownStylesBar)
         val buttonColorStateList = a.getColorStateList(R.styleable.MarkdownStylesBar_buttonColor)
@@ -66,8 +66,8 @@ class MarkdownStylesBar @JvmOverloads constructor(
         }
     }
 
-    fun getViewWithId(id: Int): View{
-        return recyclerView.findViewById(id)
+    fun getViewWithId(id: Int): View?{
+        return recyclerView?.findViewById(id)
     }
 
     }
