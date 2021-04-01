@@ -1,4 +1,4 @@
-# MarkdownEditText [ ![Download](https://api.bintray.com/packages/yahiaangelo/MarkdownEditText/com.yahiaangelo.markdownedittext/images/download.svg) ](https://bintray.com/yahiaangelo/MarkdownEditText/com.yahiaangelo.markdownedittext/_latestVersion)
+# MarkdownEditText [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.yahiaangelo.markdownedittext/markdownedittext/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.yahiaangelo.markdownedittext/markdownedittext)
 
 A native Rich text editor for android based on [Markwon](https://github.com/noties/Markwon) library with export to Markdown option
 
@@ -13,7 +13,7 @@ A native Rich text editor for android based on [Markwon](https://github.com/noti
 ### Adding the depencency
 Add the dependency to your app build.gradle file:
 ```
-implementation 'com.yahiaangelo.markdownedittext:markdownedittext:$latestVersion'
+implementation 'io.github.yahiaangelo.markdownedittex:markdownedittext:$latestVersion'
 ```
 ### XML
 ```xml
