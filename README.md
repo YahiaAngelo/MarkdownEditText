@@ -13,7 +13,7 @@ A native Rich text editor for android based on [Markwon](https://github.com/noti
 ### Adding the depencency
 Add the dependency to your app build.gradle file:
 ```
-implementation 'io.github.yahiaangelo.markdownedittex:markdownedittext:$latestVersion'
+implementation 'io.github.yahiaangelo.markdownedittext:markdownedittext:$latestVersion'
 ```
 ### XML
 ```xml
