@@ -16,6 +16,10 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
+    mavenPublish {
+        releaseSigningEnabled = false
+    }
+
     buildTypes {
         release {
             minifyEnabled false
