@@ -8,7 +8,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:7.0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -33,4 +33,8 @@ task clean(type: Delete) {
 
 subprojects{
     tasks.withType(Javadoc).all {enabled = false}
+}
+
+task wrapper2(type: Wrapper) {
+    gradleVersion '7.0.2'
 }
