@@ -101,6 +101,9 @@ class MarkdownEditText : AppCompatEditText {
         start: Int,
         end: Int,
     ) {
+        if (textStyle == TextStyle.HEADER) {
+            // todo add heading
+        }
         when (textStyle) {
             TextStyle.BOLD -> {
                 text!!.setSpan(StrongEmphasisSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -108,11 +111,12 @@ class MarkdownEditText : AppCompatEditText {
             TextStyle.ITALIC -> {
                 text!!.setSpan(EmphasisSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
+            else -> {}
         }
     }
 
     enum class TextStyle {
-        BOLD, ITALIC
+        BOLD, ITALIC, HEADER
     }
 
     fun getMD(): String {

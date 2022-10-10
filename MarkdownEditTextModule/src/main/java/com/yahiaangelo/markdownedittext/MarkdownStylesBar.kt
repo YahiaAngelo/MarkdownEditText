@@ -57,6 +57,8 @@ class MarkdownStylesBar @JvmOverloads constructor(
                     R.id.style_button_bold))
                 MarkdownEditText.TextStyle.ITALIC -> styleButtons.add(StyleButton(R.drawable.ic_format_italic,
                     R.id.style_button_italic))
+                MarkdownEditText.TextStyle.HEADER -> styleButtons.add(StyleButton(R.drawable.ic_format_header,
+                    R.id.style_button_header))
             }
         }
     }
