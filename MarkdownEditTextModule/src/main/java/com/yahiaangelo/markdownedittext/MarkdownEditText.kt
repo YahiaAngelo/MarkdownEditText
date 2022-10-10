@@ -12,7 +12,9 @@ import androidx.core.text.getSpans
 import com.google.android.material.button.MaterialButton
 import com.yahiaangelo.markdownedittext.model.EnhancedMovementMethod
 import io.noties.markwon.Markwon
+import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.core.spans.EmphasisSpan
+import io.noties.markwon.core.spans.HeadingSpan
 import io.noties.markwon.core.spans.StrongEmphasisSpan
 
 class MarkdownEditText : AppCompatEditText {
@@ -22,18 +24,22 @@ class MarkdownEditText : AppCompatEditText {
     private var markdownStylesBar: MarkdownStylesBar? = null
     private var isSelectionStyling = false
     private val textWatchers: MutableList<TextWatcher> = emptyList<TextWatcher>().toMutableList()
+    private var markDownTheme: MarkwonTheme
     var onCopyPasteListener: OnCopyPasteListener? = null
 
     constructor(context: Context) : super(context, null) {
         markwon = markwonBuilder(context)
+        markDownTheme = MarkwonTheme.create(context)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs, R.attr.editTextStyle) {
         markwon = markwonBuilder(context)
+        markDownTheme = MarkwonTheme.create(context)
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         markwon = markwonBuilder(context)
+        markDownTheme = MarkwonTheme.create(context)
     }
 
     private fun markwonBuilder(context: Context): Markwon {
@@ -86,12 +92,16 @@ class MarkdownEditText : AppCompatEditText {
         textStyle: TextStyle,
         start: Int,
     ) {
+
         when (textStyle) {
             TextStyle.BOLD -> {
                 text!!.setSpan(StrongEmphasisSpan(), start, start + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             TextStyle.ITALIC -> {
                 text!!.setSpan(EmphasisSpan(), start, start + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            TextStyle.HEADER -> {
+                text!!.setSpan(HeadingSpan(markDownTheme, 2), start, start + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
         }
     }
@@ -101,9 +111,6 @@ class MarkdownEditText : AppCompatEditText {
         start: Int,
         end: Int,
     ) {
-        if (textStyle == TextStyle.HEADER) {
-            // todo add heading
-        }
         when (textStyle) {
             TextStyle.BOLD -> {
                 text!!.setSpan(StrongEmphasisSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -111,7 +118,9 @@ class MarkdownEditText : AppCompatEditText {
             TextStyle.ITALIC -> {
                 text!!.setSpan(EmphasisSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            else -> {}
+            TextStyle.HEADER -> {
+                text!!.setSpan(HeadingSpan(markDownTheme, 2), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
         }
     }
 
