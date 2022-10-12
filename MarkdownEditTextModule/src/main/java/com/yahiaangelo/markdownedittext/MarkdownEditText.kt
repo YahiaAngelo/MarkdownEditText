@@ -1,13 +1,10 @@
 package com.yahiaangelo.markdownedittext
 
 import android.content.Context
-import android.text.Editable
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.TextWatcher
+import android.text.*
 import android.util.AttributeSet
+import android.util.Log
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.getSpans
 import com.google.android.material.button.MaterialButton
 import com.yahiaangelo.markdownedittext.model.EnhancedMovementMethod
@@ -56,34 +53,39 @@ class MarkdownEditText : AppCompatEditText {
         if (stop) {
             clearTextWatchers()
         } else {
-            if (isSelectionStyling) {
-                styliseText(textStyle, selectionStart, selectionEnd)
-                isSelectionStyling = false
-            } else {
-                textWatcher = object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {}
+            when (textStyle) {
+                TextStyle.HEADER -> triggerHeaderStyle(stop)
+                else -> {
+                    if (isSelectionStyling) {
+                        styliseText(textStyle, selectionStart, selectionEnd)
+                        isSelectionStyling = false
+                    } else {
+                        textWatcher = object : TextWatcher {
+                            override fun afterTextChanged(s: Editable?) {}
 
-                    override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int,
-                    ) {
-                    }
+                            override fun beforeTextChanged(
+                                s: CharSequence?,
+                                start: Int,
+                                count: Int,
+                                after: Int,
+                            ) {
+                            }
 
-                    override fun onTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        before: Int,
-                        count: Int,
-                    ) {
+                            override fun onTextChanged(
+                                s: CharSequence?,
+                                start: Int,
+                                before: Int,
+                                count: Int,
+                            ) {
 
-                        if (before < count) {
-                            styliseText(textStyle, start)
+                                if (before < count) {
+                                    styliseText(textStyle, start)
+                                }
+                            }
                         }
+                        addTextWatcher(textWatcher!!)
                     }
                 }
-                addTextWatcher(textWatcher!!)
             }
         }
     }
@@ -118,9 +120,7 @@ class MarkdownEditText : AppCompatEditText {
             TextStyle.ITALIC -> {
                 text!!.setSpan(EmphasisSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-            TextStyle.HEADER -> {
-                text!!.setSpan(HeadingSpan(markDownTheme, 2), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
+            else -> {}
         }
     }
 
@@ -129,14 +129,17 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     fun getMD(): String {
+        Log.d("headerState", "getMd")
         clearTextWatchers()
         var mdText = text
         val startList = emptyList<Int>().toMutableList()
         val endList = emptyList<Int>().toMutableList()
         var i = 0
+        val appliedListSpans = mutableListOf<Int>()
 
         filterSpans()
         for ((index, span) in text!!.getGivenSpans(span = TextStyle.values()).withIndex()) {
+            Log.d("headerState", "span $span")
             val start = text!!.getSpanStart(span)
             val end = text!!.getSpanEnd(span)
             startList.add(index, start)
@@ -147,9 +150,27 @@ class MarkdownEditText : AppCompatEditText {
             val end = endList.sorted()[index]
             val spannedText = end.let { text!!.substring(start, it) }
             val span = end.let { text!!.getGivenSpansAt(span = TextStyle.values(), start, it) }
+            Log.d("headerState", "parent loop")
 
             span.forEach { selectedSpan ->
-                if (spannedText.isNotEmpty() && spannedText != "\n" && spannedText != " ") {
+                Log.d("headerState", "zero state")
+
+                if (selectedSpan is HeadingSpan) {
+                    Log.d("headerState", "first state")
+                    if (!appliedListSpans.contains(start)) {
+                        Log.d("headerState", "second state")
+                        val mdString = "## $spannedText"
+                        mdText = SpannableStringBuilder(
+                            mdText!!.replaceRange(
+                                start + i,
+                                end + i,
+                                mdString
+                            )
+                        )
+                        i += 3
+                        appliedListSpans.add(start)
+                    }
+                } else if (spannedText.isNotEmpty() && spannedText != "\n" && spannedText != " ") {
                     when (selectedSpan) {
                         is StrongEmphasisSpan -> {
                             val mdString = "**$spannedText**"
@@ -168,8 +189,118 @@ class MarkdownEditText : AppCompatEditText {
         return mdText.toString().replace("****", "").replace("__", "")
     }
 
+    private fun getCurrentCursorLine(): Int {
+        return if (selectionStart != -1) layout.getLineForOffset(selectionStart) else -1
+    }
+
+    private fun triggerHeaderStyle(stop: Boolean) {
+        Log.d("headerState", "trigger called")
+        var bulletSpanStart = 0
+        if (stop) {
+            Log.d("headerState", "text watchers cleared")
+            clearTextWatchers()
+        } else {
+            val currentLineStart = layout.getLineStart(getCurrentCursorLine())
+            if (text!!.length < currentLineStart + 1 || text!!.getGivenSpansAt(
+                    span = arrayOf(
+                        TextStyle.HEADER
+                    ), currentLineStart, currentLineStart + 1
+                ).isEmpty()
+            ) {
+                if (text!!.isNotEmpty()) {
+                    if (text!!.length > 1
+                        && text!!.getGivenSpansAt(
+                            span = arrayOf(
+                                TextStyle.BOLD,
+                                TextStyle.ITALIC,
+                            ), selectionStart - 2, selectionStart
+                        ).isEmpty()
+                    ) {
+                        if (text.toString().substring(text!!.length - 2, text!!.length) != "\n") {
+                            text!!.insert(selectionStart, "\n ")
+                        } else {
+                            text!!.insert(selectionStart, " ")
+                        }
+                    } else {
+                        text!!.insert(selectionStart, "\n ")
+                    }
+                } else {
+                    text!!.insert(selectionStart, " ")
+                }
+
+                bulletSpanStart = selectionStart - 1 // todo check
+                text!!.setSpan(
+                    HeadingSpan(markwon.configuration().theme(), 2),
+                    bulletSpanStart,
+                    selectionStart,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+
+            addTextWatcher(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {}
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {
+                }
+
+                var lineCount = getLineCount()
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    Log.d("headerState", "onTextChanged")
+
+                    if (before < count) {
+//                         If there's a new line
+                        if (selectionStart == selectionEnd) { // todo try to remove getLineCount && lineCount < getLineCount()
+//                            lineCount = getLineCount()
+                            val string = text.toString()
+                            // If user hit enter
+                            if (string[selectionStart - 1] == '\n') {
+                                bulletSpanStart = selectionStart
+                                text!!.insert(selectionStart, " ")
+                                text!!.setSpan(
+                                    HeadingSpan(markwon.configuration().theme(), 2),
+                                    bulletSpanStart,
+                                    bulletSpanStart + 1,
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
+                            } else {
+                                for (bulletSpan in text?.getGivenSpansAt(span = arrayOf(TextStyle.HEADER),
+                                    bulletSpanStart,
+                                    bulletSpanStart + 1)!!
+                                ) {
+                                    Log.d("headerState", "span removed")
+                                    text?.removeSpan(bulletSpan)
+
+                                    if (bulletSpanStart < selectionStart) {
+                                        text?.setSpan(
+                                            HeadingSpan(markwon.configuration().theme(), 2),
+                                            bulletSpanStart,
+                                            selectionStart,
+                                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                                        )
+                                    } else {
+                                        text?.setSpan(
+                                            HeadingSpan(markwon.configuration().theme(), 2),
+                                            selectionStart,
+                                            bulletSpanStart,
+                                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+        }
+    }
+
     private fun filterSpans() {
-        val spans = text?.getGivenSpans(span = arrayOf(TextStyle.BOLD, TextStyle.ITALIC))
+        val spans = text?.getGivenSpans(span = arrayOf(TextStyle.BOLD, TextStyle.ITALIC, TextStyle.HEADER))
 
         if (spans != null) {
             for (span in spans) {
@@ -213,6 +344,11 @@ class MarkdownEditText : AppCompatEditText {
                         spanList.add(it)
                     }
                 }
+                TextStyle.HEADER -> {
+                    this.getSpans<HeadingSpan>().forEach {
+                        spanList.add(it)
+                    }
+                }
             }
         }
         return spanList
@@ -247,6 +383,11 @@ class MarkdownEditText : AppCompatEditText {
                 }
                 TextStyle.ITALIC -> {
                     this.getSpans<EmphasisSpan>(start, end).forEach {
+                        spanList.add(it)
+                    }
+                }
+                TextStyle.HEADER -> {
+                    this.getSpans<HeadingSpan>(start, end).forEach {
                         spanList.add(it)
                     }
                 }
