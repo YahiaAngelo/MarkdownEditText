@@ -3,7 +3,6 @@ package com.yahiaangelo.markdownedittext
 import android.content.Context
 import android.text.*
 import android.util.AttributeSet
-import android.util.Log
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.text.getSpans
 import com.google.android.material.button.MaterialButton
@@ -129,7 +128,6 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     fun getMD(): String {
-        Log.d("headerState", "getMd")
         clearTextWatchers()
         var mdText = text
         val startList = emptyList<Int>().toMutableList()
@@ -139,7 +137,6 @@ class MarkdownEditText : AppCompatEditText {
 
         filterSpans()
         for ((index, span) in text!!.getGivenSpans(span = TextStyle.values()).withIndex()) {
-            Log.d("headerState", "span $span")
             val start = text!!.getSpanStart(span)
             val end = text!!.getSpanEnd(span)
             startList.add(index, start)
@@ -150,15 +147,10 @@ class MarkdownEditText : AppCompatEditText {
             val end = endList.sorted()[index]
             val spannedText = end.let { text!!.substring(start, it) }
             val span = end.let { text!!.getGivenSpansAt(span = TextStyle.values(), start, it) }
-            Log.d("headerState", "parent loop")
 
             span.forEach { selectedSpan ->
-                Log.d("headerState", "zero state")
-
                 if (selectedSpan is HeadingSpan) {
-                    Log.d("headerState", "first state")
                     if (!appliedListSpans.contains(start)) {
-                        Log.d("headerState", "second state")
                         val mdString = "## $spannedText"
                         mdText = SpannableStringBuilder(
                             mdText!!.replaceRange(
@@ -194,10 +186,8 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     private fun triggerHeaderStyle(stop: Boolean) {
-        Log.d("headerState", "trigger called")
         var bulletSpanStart = 0
         if (stop) {
-            Log.d("headerState", "text watchers cleared")
             clearTextWatchers()
         } else {
             val currentLineStart = layout.getLineStart(getCurrentCursorLine())
@@ -248,14 +238,11 @@ class MarkdownEditText : AppCompatEditText {
                 ) {
                 }
 
-                var lineCount = getLineCount()
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    Log.d("headerState", "onTextChanged")
 
                     if (before < count) {
 //                         If there's a new line
-                        if (selectionStart == selectionEnd) { // todo try to remove getLineCount && lineCount < getLineCount()
-//                            lineCount = getLineCount()
+                        if (selectionStart == selectionEnd) {
                             val string = text.toString()
                             // If user hit enter
                             if (string[selectionStart - 1] == '\n') {
@@ -272,7 +259,6 @@ class MarkdownEditText : AppCompatEditText {
                                     bulletSpanStart,
                                     bulletSpanStart + 1)!!
                                 ) {
-                                    Log.d("headerState", "span removed")
                                     text?.removeSpan(bulletSpan)
 
                                     if (bulletSpanStart < selectionStart) {
@@ -479,10 +465,5 @@ class MarkdownEditText : AppCompatEditText {
     //Renders md text in editText
     fun renderMD() {
         this.text = SpannableStringBuilder(markwon.toMarkdown(text.toString()))
-    }
-
-    //Renders given md string
-    fun renderMD(md: String) {
-        this.text = SpannableStringBuilder(markwon.toMarkdown(md))
     }
 }
