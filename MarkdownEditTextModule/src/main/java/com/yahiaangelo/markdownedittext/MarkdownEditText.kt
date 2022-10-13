@@ -151,16 +151,18 @@ class MarkdownEditText : AppCompatEditText {
             span.forEach { selectedSpan ->
                 if (selectedSpan is HeadingSpan) {
                     if (!appliedListSpans.contains(start)) {
-                        val mdString = "## $spannedText"
-                        mdText = SpannableStringBuilder(
-                            mdText!!.replaceRange(
-                                start + i,
-                                end + i,
-                                mdString
+                        if (spannedText.isNotBlank()) {
+                            val mdString = "## $spannedText"
+                            mdText = SpannableStringBuilder(
+                                mdText!!.replaceRange(
+                                    start + i,
+                                    end + i,
+                                    mdString
+                                )
                             )
-                        )
-                        i += 3
-                        appliedListSpans.add(start)
+                            i += 3
+                            appliedListSpans.add(start)
+                        }
                     }
                 } else if (spannedText.isNotEmpty() && spannedText != "\n" && spannedText != " ") {
                     when (selectedSpan) {
@@ -186,11 +188,11 @@ class MarkdownEditText : AppCompatEditText {
     }
 
     private fun triggerHeaderStyle(stop: Boolean) {
-        var bulletSpanStart = 0
         if (stop) {
             clearTextWatchers()
         } else {
-            val currentLineStart = layout.getLineStart(getCurrentCursorLine())
+            val currentLineStart = layout.getLineStart(getCurrentCursorLine()) - 1
+            var headerSpanStart = 0
             if (text!!.length < currentLineStart + 1 || text!!.getGivenSpansAt(
                     span = arrayOf(
                         TextStyle.HEADER
@@ -218,10 +220,10 @@ class MarkdownEditText : AppCompatEditText {
                     text!!.insert(selectionStart, " ")
                 }
 
-                bulletSpanStart = selectionStart - 1 // todo check
+                headerSpanStart = selectionStart - 1
                 text!!.setSpan(
                     HeadingSpan(markwon.configuration().theme(), 2),
-                    bulletSpanStart,
+                    headerSpanStart,
                     selectionStart,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
@@ -246,25 +248,25 @@ class MarkdownEditText : AppCompatEditText {
                             val string = text.toString()
                             // If user hit enter
                             if (string[selectionStart - 1] == '\n') {
-                                bulletSpanStart = selectionStart
+                                headerSpanStart = selectionStart
                                 text!!.insert(selectionStart, " ")
                                 text!!.setSpan(
                                     HeadingSpan(markwon.configuration().theme(), 2),
-                                    bulletSpanStart,
-                                    bulletSpanStart + 1,
+                                    headerSpanStart,
+                                    headerSpanStart + 1,
                                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                                 )
                             } else {
                                 for (bulletSpan in text?.getGivenSpansAt(span = arrayOf(TextStyle.HEADER),
-                                    bulletSpanStart,
-                                    bulletSpanStart + 1)!!
+                                    headerSpanStart,
+                                    headerSpanStart + 1)!!
                                 ) {
                                     text?.removeSpan(bulletSpan)
 
-                                    if (bulletSpanStart < selectionStart) {
+                                    if (headerSpanStart < selectionStart) {
                                         text?.setSpan(
                                             HeadingSpan(markwon.configuration().theme(), 2),
-                                            bulletSpanStart,
+                                            headerSpanStart,
                                             selectionStart,
                                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                                         )
@@ -272,7 +274,7 @@ class MarkdownEditText : AppCompatEditText {
                                         text?.setSpan(
                                             HeadingSpan(markwon.configuration().theme(), 2),
                                             selectionStart,
-                                            bulletSpanStart,
+                                            headerSpanStart,
                                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                                         )
                                     }

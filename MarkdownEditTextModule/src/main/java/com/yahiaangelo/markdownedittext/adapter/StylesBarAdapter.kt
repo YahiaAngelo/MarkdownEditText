@@ -72,10 +72,12 @@ class StylesBarAdapter(private var buttonsList: ArrayList<StyleButton>) : Recycl
                     MarkdownEditText.TextStyle.ITALIC,
                     !button.isChecked
                 )
-                R.id.style_button_header -> markdownEditText!!.triggerStyle(
-                    MarkdownEditText.TextStyle.HEADER,
-                    !button.isChecked
-                )
+                R.id.style_button_header -> {
+                    markdownEditText!!.triggerStyle(
+                        MarkdownEditText.TextStyle.HEADER,
+                        !button.isChecked
+                    )
+                }
             }
         }
     }
