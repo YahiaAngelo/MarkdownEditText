@@ -59,9 +59,6 @@ class EnhancedMovementMethod : ArrowKeyMovementMethod() {
                 }
                 return true
             }
-            /*else {
-                Selection.removeSelection(buffer);
-            }*/
         }
         return super.onTouchEvent(widget, buffer, event)
     }

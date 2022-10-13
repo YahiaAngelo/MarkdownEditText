@@ -18,28 +18,28 @@ class StylesBarAdapter(private var buttonsList: ArrayList<StyleButton>) : Recycl
     class MyViewHolder(val styleButton: MaterialButton) : RecyclerView.ViewHolder(styleButton)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val styleButtonView = LayoutInflater.from(parent.context).inflate(R.layout.styles_bar_item, parent, false) as MaterialButton
+        val styleButtonView =
+            LayoutInflater.from(parent.context).inflate(R.layout.styles_bar_item, parent, false) as MaterialButton
         return MyViewHolder(styleButtonView)
     }
 
-
     override fun getItemCount(): Int {
-       return buttonsList.size
+        return buttonsList.size
     }
 
-    fun setStyles(newButtonsList: ArrayList<StyleButton>){
+    fun setStyles(newButtonsList: ArrayList<StyleButton>) {
         buttonsList = newButtonsList
         notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val styleButtonModel = buttonsList[position]
-        if (buttonsColor != null){
+        if (buttonsColor != null) {
             holder.styleButton.backgroundTintList = buttonsColor
         }
         holder.styleButton.icon = holder.itemView.context.getDrawable(styleButtonModel.icon)
         holder.styleButton.id = styleButtonModel.id
-        if (styleButtonModel.id == R.id.style_button_link){
+        if (styleButtonModel.id == R.id.style_button_link) {
             holder.styleButton.isCheckable = false
             holder.styleButton.setOnClickListener {
                 styleButtonClick(holder.styleButton)
@@ -62,7 +62,7 @@ class StylesBarAdapter(private var buttonsList: ArrayList<StyleButton>) : Recycl
     }
 
     private fun styleButtonClick(button: MaterialButton) {
-        if(markdownEditText != null) {
+        if (markdownEditText != null) {
             when (button.id) {
                 R.id.style_button_bold -> markdownEditText!!.triggerStyle(
                     MarkdownEditText.TextStyle.BOLD,
@@ -72,23 +72,13 @@ class StylesBarAdapter(private var buttonsList: ArrayList<StyleButton>) : Recycl
                     MarkdownEditText.TextStyle.ITALIC,
                     !button.isChecked
                 )
-                R.id.style_button_strike -> markdownEditText!!.triggerStyle(
-                    MarkdownEditText.TextStyle.STRIKE,
-                    !button.isChecked
-                )
-                R.id.style_button_unordered_list -> markdownEditText!!.triggerStyle(
-                    MarkdownEditText.TextStyle.UNORDERED_LIST,
-                    !button.isChecked
-                )
-                R.id.style_button_ordered_list -> markdownEditText!!.triggerStyle(
-                    MarkdownEditText.TextStyle.ORDERED_LIST,
-                    !button.isChecked)
-                R.id.style_button_task_list -> markdownEditText!!.triggerStyle(
-                    MarkdownEditText.TextStyle.TASKS_LIST,
-                    !button.isChecked)
-                R.id.style_button_link -> markdownEditText!!.showInsertLinkDialog()
+                R.id.style_button_header -> {
+                    markdownEditText!!.triggerStyle(
+                        MarkdownEditText.TextStyle.HEADER,
+                        !button.isChecked
+                    )
+                }
             }
-
         }
     }
 }

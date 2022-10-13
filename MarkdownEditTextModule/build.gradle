@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.vanniktech.maven.publish'
+apply plugin: 'maven-publish'
 
 
 android {
@@ -13,6 +14,10 @@ android {
         targetSdkVersion 31
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+    }
+
+    mavenPublish {
+        releaseSigningEnabled = false
     }
 
     buildTypes {
@@ -27,8 +32,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -55,3 +60,17 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+//afterEvaluate {
+//    publishing {
+//        publications {
+//// Creates a Maven publication called "release".
+//            release(MavenPublication) {
+//                from components.release
+//                groupId = 'com.github.TimurIsroilov123'
+//                artifactId = 'MarkdownEditText'
+//                version = '1.0'
+//            }
+//        }
+//    }
+//}

@@ -1,2 +1,2 @@
-include ':sample', ':MarkdownEditText'
-rootProject.name = "MarkdownEditText"
+include ':sample', ':MarkdownEditTextModule'
+rootProject.name = "MarkdownEditTextFixed"
